@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:susulearn_tablet/Screens/problem_hint_screen.dart';
+import 'package:susulearn_tablet/Screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +13,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
             primarySwatch: Colors.blue, scaffoldBackgroundColor: Colors.white),
-        home: const ProblemHintScreen(
-          index: 1,
-        ));
+        home: const LoginScreen());
   }
 }
