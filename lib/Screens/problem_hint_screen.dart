@@ -89,87 +89,87 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
           appBar: AppBar(
             title: Text("문제 ${widget.index}"),
           ),
-          body: Stack(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: Sizes.size48, horizontal: Sizes.size24),
-              child: Scrollbar(
-                child: SingleChildScrollView(
-                  child: Column(children: [
-                    const FractionallySizedBox(
-                      widthFactor: 1,
-                    ),
-                    Gaps.v20,
-                    SizedBox(
-                      height: Sizes.size80 * 3,
-                      child: TeXView(
-                        loadingWidgetBuilder: (context) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        },
-                        child: TeXViewDocument(
-                          _problem,
+          body: SingleChildScrollView(
+            child: SizedBox(
+              height: 10000,
+              child: DrawingBoard(
+                background: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 10000,
+                  color: Colors.grey.withOpacity(0.1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: Sizes.size48, horizontal: Sizes.size24),
+                    child: Column(children: [
+                      const FractionallySizedBox(
+                        widthFactor: 1,
+                      ),
+                      Gaps.v20,
+                      SizedBox(
+                        height: Sizes.size80 * 3,
+                        child: TeXView(
+                          loadingWidgetBuilder: (context) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          },
+                          child: TeXViewDocument(
+                            _problem,
+                          ),
                         ),
                       ),
-                    ),
-                    Gaps.v20,
-                    for (var image in _listImages)
-                      Column(
-                        children: [image, Gaps.v20],
-                      ),
-                    for (var i = 0; i < _listChoices.length; i++)
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: TeXView(
-                              child: TeXViewDocument(
-                                Problems.listChoicesNumber[i] +
-                                    Problems.gap +
-                                    _listChoices[i],
-                              ),
-                            ),
-                          ),
-                          Gaps.v20,
-                        ],
-                      ),
-                    Gaps.v10,
-                    for (var i = 0; i < _listHints.length; i++)
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 300),
-                        opacity: hintIndex > i ? 1 : 0,
-                        child: Column(
+                      Gaps.v20,
+                      for (var image in _listImages)
+                        Column(
+                          children: [image, Gaps.v20],
+                        ),
+                      for (var i = 0; i < _listChoices.length; i++)
+                        Column(
                           children: [
-                            hintTypeTextWidget(i),
-                            Gaps.v20,
-                            SizedBox(
-                              height: 150,
+                            Padding(
+                              padding: const EdgeInsets.all(10),
                               child: TeXView(
                                 child: TeXViewDocument(
-                                  _listHints[i],
+                                  Problems.listChoicesNumber[i] +
+                                      Problems.gap +
+                                      _listChoices[i],
                                 ),
                               ),
                             ),
-                            _hintImg[i + 1] ?? Gaps.v10,
-                            Gaps.v40,
+                            Gaps.v20,
                           ],
                         ),
-                      ),
-                  ]),
+                      Gaps.v10,
+                      for (var i = 0; i < _listHints.length; i++)
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 300),
+                          opacity: hintIndex > i ? 1 : 0,
+                          child: Column(
+                            children: [
+                              hintTypeTextWidget(i),
+                              Gaps.v20,
+                              SizedBox(
+                                height: 150,
+                                child: TeXView(
+                                  child: TeXViewDocument(
+                                    _listHints[i],
+                                  ),
+                                ),
+                              ),
+                              _hintImg[i + 1] ?? Gaps.v10,
+                              Gaps.v40,
+                            ],
+                          ),
+                        ),
+                    ]),
+                  ),
                 ),
+                showDefaultActions: true,
+                showDefaultTools: true,
+                boardPanEnabled: false,
+                boardScaleEnabled: false,
               ),
             ),
-            DrawingBoard(
-              background: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: Colors.grey.withOpacity(0.1),
-              ),
-              showDefaultActions: true,
-              showDefaultTools: true,
-              boardPanEnabled: false,
-            )
-          ]),
+          ),
           bottomNavigationBar: BottomAppBar(
               child: CupertinoButton(
             color: Colors.amber,
