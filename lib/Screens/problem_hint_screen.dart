@@ -104,6 +104,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
             _shouldScroll = true;
           },
           child: GestureDetector(
+            onPanStart: (details) {
+              if (details.kind == PointerDeviceKind.stylus) {
+                _shouldScroll = false;
+              }
+            },
             child: SingleChildScrollView(
               physics: _shouldScroll
                   ? const AlwaysScrollableScrollPhysics()

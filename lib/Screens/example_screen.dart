@@ -1,152 +1,194 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tex/flutter_tex.dart';
 
-import '../Constants/gaps.dart';
-import '../Constants/sizes.dart';
-import '../problems/problems.dart';
+import '../features/sketcher.dart';
 
 class ExampleScreen extends StatefulWidget {
-  const ExampleScreen({super.key, required this.index});
-  final int index;
+  const ExampleScreen({super.key});
 
   @override
   State<ExampleScreen> createState() => _ExampleScreenState();
 }
 
 class _ExampleScreenState extends State<ExampleScreen> {
-  int hint_index = 0;
-  int hint_max = 0;
+  Color selectedColor = Colors.black;
+  double selectedWidth = 3;
+  List<DrawnLine> lines = <DrawnLine>[];
+  DrawnLine line = DrawnLine([], Colors.black, 0);
 
-  void _onHintPressed(context) {
-    if (hint_index < hint_max) {
-      hint_index++;
-    }
-    setState(() {});
+  void _onPanStart(DragStartDetails details) {
+    print('User started drawing');
+    final box = context.findRenderObject() as RenderBox;
+    final point = box.globalToLocal(details.localPosition);
+
+    setState(() {
+      line = DrawnLine([point], selectedColor, selectedWidth);
+      lines.add(line);
+    });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    hint_max = Problems.listHints[widget.index - 1].length;
-    setState(() {});
+  void _onPanUpdate(DragUpdateDetails details) {
+    final box = context.findRenderObject() as RenderBox;
+    final point = box.globalToLocal(details.localPosition);
+
+    final path = List.from(line.path)..add(point);
+    line = DrawnLine(path, selectedColor, selectedWidth);
+    setState(() {
+      if (lines.isEmpty) {
+        lines.add(line);
+      } else {
+        lines[lines.length - 1] = line;
+      }
+    });
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    final path = List.from(line.path)..add(null);
+
+    setState(() {
+      lines.add(line);
+    });
+  }
+
+  void _clear() {
+    setState(() {
+      lines = [];
+      line = DrawnLine([], Colors.black, 0);
+    });
+  }
+
+  Widget buildColorButton(Color color) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: color,
+        child: Container(),
+        onPressed: () {
+          setState(() {
+            selectedColor = color;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget buildStrokeButton(double strokeWidth) {
+    return GestureDetector(
+      onTap: () {
+        selectedWidth = strokeWidth;
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Container(
+          width: strokeWidth * 2,
+          height: strokeWidth * 2,
+          decoration: BoxDecoration(
+              color: selectedColor, borderRadius: BorderRadius.circular(20.0)),
+        ),
+      ),
+    );
+  }
+
+  Widget buildStrokeToolbar() {
+    return Positioned(
+      bottom: 100.0,
+      right: 10.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildStrokeButton(5.0),
+          buildStrokeButton(10.0),
+          buildStrokeButton(15.0),
+        ],
+      ),
+    );
+  }
+
+  Widget buildColorToolbar() {
+    return Positioned(
+      top: 40.0,
+      right: 10.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildClearButton(),
+          const Divider(
+            height: 10.0,
+          ),
+          buildColorButton(Colors.red),
+          buildColorButton(Colors.blueAccent),
+          buildColorButton(Colors.deepOrange),
+          buildColorButton(Colors.green),
+          buildColorButton(Colors.lightBlue),
+          buildColorButton(Colors.black),
+          buildColorButton(Colors.white),
+          buildEraserButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget buildClearButton() {
+    return GestureDetector(
+      onTap: _clear,
+      child: const CircleAvatar(
+        child: Icon(
+          Icons.create,
+          size: 20.0,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget buildEraserButton() {
+    return GestureDetector(
+      onTap: () {
+        selectedWidth = 40;
+        selectedColor = Colors.grey.shade200;
+      },
+      child: const CircleAvatar(
+        child: Icon(
+          Icons.rectangle,
+          size: 20.0,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("문제 ${widget.index}"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: Sizes.size48, horizontal: Sizes.size24),
-        child: Scrollbar(
-          child: SingleChildScrollView(
-            child: Column(children: [
-              const FractionallySizedBox(
-                widthFactor: 1,
-              ),
-              Gaps.v20,
-              SizedBox(
-                height: Sizes.size80 * 2,
-                child: TeXView(
-                  child: TeXViewDocument(
-                    Problems.listProblem[widget.index - 1],
-                  ),
-                ),
-              ),
-              Gaps.v20,
-              for (var image in Problems.listImages[widget.index - 1])
-                Column(
-                  children: [image, Gaps.v20],
-                ),
-              for (var choice in Problems.listChoices[widget.index - 1])
-                Column(
-                  children: [
-                    Container(
-                      color: Colors.pink,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            child: Text(
-                              "${Problems.listChoices[widget.index - 1].indexOf(choice) + 1}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                          ),
-                          Gaps.h20,
-                          Expanded(
-                            // height: 100,
-                            child: Container(
-                              height: 100,
-                              color: Colors.amber,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    color: Colors.green,
-                                    height: 50,
-                                    width: 100,
-
-                                    // alignment: Alignment.centerLeft,
-                                    child: TeXView(
-                                      style: const TeXViewStyle(
-                                          backgroundColor: Colors.blue),
-                                      child: TeXViewDocument(
-                                        style: const TeXViewStyle(
-                                            backgroundColor: Colors.grey),
-                                        choice,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Gaps.v20
-                  ],
-                ),
-              Gaps.v20,
-              for (var hint in Problems.listHints[widget.index - 1])
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: hint_index >
-                          Problems.listHints[widget.index - 1].indexOf(hint)
-                      ? 1
-                      : 0,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 100,
-                        child: TeXView(
-                          child: TeXViewDocument(
-                            hint,
-                          ),
-                        ),
-                      ),
-                      Gaps.v20,
-                    ],
-                  ),
-                ),
-            ]),
-          ),
+        appBar: AppBar(
+          title: const Text("Example"),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-          child: CupertinoButton(
-        color: Colors.amber,
-        onPressed: () {
-          _onHintPressed(context);
-        },
-        child: Text("Hint! ($hint_index / $hint_max)"),
-      )),
-    );
+        body: Stack(children: [
+          GestureDetector(
+            onPanStart: _onPanStart,
+            onPanUpdate: _onPanUpdate,
+            onPanEnd: _onPanEnd,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.grey.shade200,
+              child: CustomPaint(
+                painter: Sketcher(lines: lines),
+              ),
+            ),
+          ),
+          buildColorToolbar(),
+          buildStrokeToolbar(),
+        ]));
   }
+}
+
+class DrawnLine {
+  final List<dynamic> path;
+  final Color color;
+  final double width;
+
+  DrawnLine(this.path, this.color, this.width);
 }
