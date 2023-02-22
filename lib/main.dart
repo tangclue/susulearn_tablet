@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:susulearn_tablet/Screens/example_screen.dart';
+
+import 'Screens/problem_select_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,6 +14,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
             primarySwatch: Colors.blue, scaffoldBackgroundColor: Colors.white),
-        home: const ExampleScreen());
+        home: const ProblemSelectScreen());
   }
 }

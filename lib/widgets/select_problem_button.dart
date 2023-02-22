@@ -21,6 +21,7 @@ class _SelectProblemButtonState extends State<SelectProblemButton> {
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: () {
+        print("${widget.index}");
         widget.function(context, widget.index);
       },
       color: Colors.amber,

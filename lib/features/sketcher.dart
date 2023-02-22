@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../Screens/example_screen.dart';
+import '../widgets/drawing_widgets.dart';
 
 class Sketcher extends CustomPainter {
   final List<DrawnLine> lines;
