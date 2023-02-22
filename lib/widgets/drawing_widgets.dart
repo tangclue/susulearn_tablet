@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../features/sketcher.dart';
@@ -15,15 +17,20 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
   List<DrawnLine> lines = <DrawnLine>[];
   DrawnLine line = DrawnLine([], Colors.black, 0);
 
+  StreamController<List<DrawnLine>> linesStreamController =
+      StreamController<List<DrawnLine>>.broadcast();
+  StreamController<DrawnLine> currentLineStreamController =
+      StreamController<DrawnLine>.broadcast();
+
   void _onPanStart(DragStartDetails details) {
     print('User started drawing');
     final box = context.findRenderObject() as RenderBox;
     final point = box.globalToLocal(details.globalPosition);
 
-    setState(() {
-      line = DrawnLine([point], selectedColor, selectedWidth);
-      lines.add(line);
-    });
+    line = DrawnLine([point], selectedColor, selectedWidth);
+    lines.add(line);
+
+    currentLineStreamController.add(line);
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -32,21 +39,23 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
 
     final path = List.from(line.path)..add(point);
     line = DrawnLine(path, selectedColor, selectedWidth);
-    setState(() {
-      if (lines.isEmpty) {
-        lines.add(line);
-      } else {
-        lines[lines.length - 1] = line;
-      }
-    });
+
+    if (lines.isEmpty) {
+      lines.add(line);
+    } else {
+      lines[lines.length - 1] = line;
+    }
+
+    currentLineStreamController.add(line);
+    // print(line.path.last);
   }
 
   void _onPanEnd(DragEndDetails details) {
     final path = List.from(line.path)..add(null);
+    linesStreamController.add(lines);
+    print(lines.length);
 
-    setState(() {
-      lines.add(line);
-    });
+    // lines.add(line);
   }
 
   void _clear() {
@@ -58,10 +67,12 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     });
   }
 
+  @override
   Widget buildColorButton(Color color) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
+        heroTag: '$color',
         mini: true,
         backgroundColor: color,
         shape: Border.all(color: Colors.black),
@@ -166,22 +177,51 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     );
   }
 
+  Widget buildAllPaths(BuildContext context) {
+    return RepaintBoundary(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: StreamBuilder<List<DrawnLine>>(
+          stream: linesStreamController.stream,
+          builder: (context, snapshot) {
+            return CustomPaint(
+              painter: Sketcher(
+                lines: lines,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildCurrentPath(BuildContext context) {
+    return GestureDetector(
+      onPanStart: _onPanStart,
+      onPanUpdate: _onPanUpdate,
+      onPanEnd: _onPanEnd,
+      child: RepaintBoundary(
+        child: Container(
+          color: Colors.transparent,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: StreamBuilder<DrawnLine>(
+              stream: currentLineStreamController.stream,
+              builder: (context, snapshot) {
+                return CustomPaint(painter: Sketcher(lines: lines));
+              }),
+          // CustomPaint widget will go here
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      GestureDetector(
-        onPanStart: _onPanStart,
-        onPanUpdate: _onPanUpdate,
-        onPanEnd: _onPanEnd,
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: Colors.grey.withOpacity(0.2),
-          child: CustomPaint(
-            painter: Sketcher(lines: lines),
-          ),
-        ),
-      ),
+      buildAllPaths(context),
+      buildCurrentPath(context),
       buildColorToolbar(),
       buildStrokeToolbar(),
     ]);

@@ -80,6 +80,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
 
   final ScrollController _scrollController = ScrollController();
   final bool _shouldScroll = false;
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
