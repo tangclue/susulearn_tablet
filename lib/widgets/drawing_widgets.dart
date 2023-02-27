@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:susulearn_tablet/Constants/gaps.dart';
 
 import '../features/sketcher.dart';
 
@@ -28,7 +29,6 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     final point = box.globalToLocal(details.globalPosition);
 
     line = DrawnLine([point], selectedColor, selectedWidth);
-    lines.add(line);
 
     currentLineStreamController.add(line);
   }
@@ -40,20 +40,20 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     final path = List.from(line.path)..add(point);
     line = DrawnLine(path, selectedColor, selectedWidth);
 
-    if (lines.isEmpty) {
-      lines.add(line);
-    } else {
-      lines[lines.length - 1] = line;
-    }
+    // if (lines.isEmpty) {
+    //   lines.add(line);
+    // } else {
+    //   lines[lines.length - 1] = line;
+    // }
 
     currentLineStreamController.add(line);
     // print(line.path.last);
   }
 
   void _onPanEnd(DragEndDetails details) {
-    final path = List.from(line.path)..add(null);
+    // final path = List.from(line.path)..add(null);
+    lines.add(line);
     linesStreamController.add(lines);
-    print(lines.length);
 
     // lines.add(line);
   }
@@ -142,6 +142,10 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
             height: 10.0,
           ),
           buildEraserButton(),
+          Gaps.v20,
+          buildStrokeButton(5.0),
+          buildStrokeButton(10.0),
+          buildStrokeButton(15.0),
         ],
       ),
     );
@@ -164,7 +168,7 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     return GestureDetector(
       onTap: () {
         selectedWidth = 200;
-        selectedColor = Colors.grey.shade200;
+        selectedColor = Colors.white;
         setState(() {});
       },
       child: const CircleAvatar(
@@ -202,14 +206,15 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
       child: RepaintBoundary(
-        child: Container(
-          color: Colors.transparent,
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: StreamBuilder<DrawnLine>(
               stream: currentLineStreamController.stream,
               builder: (context, snapshot) {
-                return CustomPaint(painter: Sketcher(lines: lines));
+                return CustomPaint(
+                  painter: Sketcher(lines: [line]),
+                );
               }),
           // CustomPaint widget will go here
         ),
@@ -223,7 +228,6 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
       buildAllPaths(context),
       buildCurrentPath(context),
       buildColorToolbar(),
-      buildStrokeToolbar(),
     ]);
   }
 }
