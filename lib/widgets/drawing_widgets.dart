@@ -52,7 +52,7 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
           double lenLast = vectLast.distanceSquared;
           double lenMid = vectMid.distanceSquared;
           double minLen = min(lenStart, min(lenLast, lenMid));
-          if (minLen < selectedWidth) {
+          if (minLen < selectedWidth * 10) {
             lines.remove(linetemp);
             print("erased!!");
             continue;
