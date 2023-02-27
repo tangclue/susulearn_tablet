@@ -38,6 +38,7 @@ dependencies:
   flutter_tex: ^4.0.3+4
   flutter_drawing_board: ^0.4.4+2
   pointer_interceptor: ^0.9.3+4
+  font_awesome_flutter: ^10.4.0
 
 dev_dependencies:
   flutter_test:
