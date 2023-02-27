@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:susulearn_tablet/Constants/gaps.dart';
@@ -14,9 +15,10 @@ class DrawingWidgets extends StatefulWidget {
 
 class _DrawingWidgetsState extends State<DrawingWidgets> {
   Color selectedColor = Colors.black;
-  double selectedWidth = 3;
+  double selectedWidth = 1;
   List<DrawnLine> lines = <DrawnLine>[];
   DrawnLine line = DrawnLine([], Colors.black, 0);
+  bool _isErasing = false;
 
   StreamController<List<DrawnLine>> linesStreamController =
       StreamController<List<DrawnLine>>.broadcast();
@@ -39,22 +41,42 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
 
     final path = List.from(line.path)..add(point);
     line = DrawnLine(path, selectedColor, selectedWidth);
+    if (_isErasing) {
+      if (lines.isNotEmpty) {
+        for (var linetemp in lines) {
+          Offset vectStart = (point - (linetemp.path.first));
+          Offset vectLast = (point - (linetemp.path.last));
+          Offset vectMid = (vectStart + vectLast) / 2;
 
-    // if (lines.isEmpty) {
-    //   lines.add(line);
-    // } else {
-    //   lines[lines.length - 1] = line;
-    // }
+          double lenStart = vectStart.distanceSquared;
+          double lenLast = vectLast.distanceSquared;
+          double lenMid = vectMid.distanceSquared;
+          double minLen = min(lenStart, min(lenLast, lenMid));
+          if (minLen < selectedWidth) {
+            lines.remove(linetemp);
+            print("erased!!");
+            continue;
+          }
+        }
+      }
+    }
+    // print(point);
+    // print(point - const Offset(2, 3));
 
     currentLineStreamController.add(line);
-    // print(line.path.last);
+    linesStreamController.add(lines);
   }
 
   void _onPanEnd(DragEndDetails details) {
     // final path = List.from(line.path)..add(null);
-    lines.add(line);
-    linesStreamController.add(lines);
+    if (!_isErasing) {
+      lines.add(line);
+      linesStreamController.add(lines);
+    } else {
+      line = DrawnLine([], Colors.white, 0);
 
+      currentLineStreamController.add(line);
+    }
     // lines.add(line);
   }
 
@@ -62,8 +84,9 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     setState(() {
       lines = [];
       line = DrawnLine([], Colors.black, 0);
-      selectedWidth = 5;
+      selectedWidth = 1;
       selectedColor = Colors.black;
+      _isErasing = false;
     });
   }
 
@@ -80,7 +103,9 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
         onPressed: () {
           setState(() {
             selectedColor = color;
-            selectedWidth = 5;
+            selectedWidth = 1;
+
+            _isErasing = false;
           });
         },
       ),
@@ -95,8 +120,8 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(
-          width: strokeWidth * 2,
-          height: strokeWidth * 2,
+          width: strokeWidth * 10,
+          height: strokeWidth * 10,
           decoration: BoxDecoration(
               color: selectedColor,
               borderRadius: BorderRadius.circular(30.0),
@@ -106,25 +131,9 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     );
   }
 
-  Widget buildStrokeToolbar() {
-    return Positioned(
-      bottom: 100.0,
-      right: 10.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          buildStrokeButton(5.0),
-          buildStrokeButton(10.0),
-          buildStrokeButton(15.0),
-        ],
-      ),
-    );
-  }
-
   Widget buildColorToolbar() {
     return Positioned(
-      top: 40.0,
+      top: 120.0,
       right: 10.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,9 +152,9 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
           ),
           buildEraserButton(),
           Gaps.v20,
+          buildStrokeButton(1.0),
+          buildStrokeButton(3.0),
           buildStrokeButton(5.0),
-          buildStrokeButton(10.0),
-          buildStrokeButton(15.0),
         ],
       ),
     );
@@ -167,8 +176,9 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
   Widget buildEraserButton() {
     return GestureDetector(
       onTap: () {
-        selectedWidth = 200;
-        selectedColor = Colors.white;
+        selectedWidth = 100;
+        selectedColor = Colors.grey.shade200;
+        _isErasing = true;
         setState(() {});
       },
       child: const CircleAvatar(

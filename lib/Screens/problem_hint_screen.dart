@@ -7,6 +7,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 import '../Constants/gaps.dart';
 import '../Constants/sizes.dart';
 import '../problems/problems.dart';
+import '../widgets/drawing_widgets.dart';
 
 class ProblemHintScreen extends StatefulWidget {
   const ProblemHintScreen({super.key, required this.index});
@@ -30,6 +31,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
   int _submitIndex = 0;
   bool _submitted = false;
   bool _corrected = false;
+  bool _isDrawing = false;
 
   void _onHintPressed(context) {
     if (hintIndex < hintMax) {
@@ -86,7 +88,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
   }
 
   final ScrollController _scrollController = ScrollController();
-  final bool _shouldScroll = true;
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -107,6 +109,12 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
     });
   }
 
+  void _onToggleDrawing() {
+    setState(() {
+      _isDrawing = !_isDrawing;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -120,12 +128,12 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: _shouldScroll
+            physics: !_isDrawing
                 ? const AlwaysScrollableScrollPhysics()
                 : const NeverScrollableScrollPhysics(),
             child: Stack(children: [
               IgnorePointer(
-                ignoring: !_shouldScroll,
+                ignoring: !_isDrawing,
                 child: Container(
                   color: Colors.transparent,
                   child: Container(
@@ -135,7 +143,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(
                           top: Sizes.size48,
-                          right: Sizes.size24,
+                          right: Sizes.size60,
                           left: Sizes.size24),
                       child: Column(children: [
                         const FractionallySizedBox(
@@ -247,10 +255,10 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                   ),
                 ),
               ),
-              // IgnorePointer(
-              //   ignoring: _shouldScroll,
-              //   child: const DrawingWidgets(),
-              // ),
+              IgnorePointer(
+                ignoring: !_isDrawing,
+                child: _isDrawing ? const DrawingWidgets() : const SizedBox(),
+              ),
               Positioned(
                   top: Sizes.size12,
                   right: Sizes.size60,
@@ -261,6 +269,20 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                         onPressed: _onPressedSubmit,
                       ),
                       const Text("채점하기")
+                    ],
+                  )),
+              Positioned(
+                  top: Sizes.size12,
+                  right: Sizes.size12,
+                  child: Column(
+                    children: [
+                      IconButton(
+                        icon: !_isDrawing
+                            ? const FaIcon(FontAwesomeIcons.pencil)
+                            : const FaIcon(FontAwesomeIcons.ban),
+                        onPressed: _onToggleDrawing,
+                      ),
+                      const Text("그리기")
                     ],
                   )),
               Positioned(
