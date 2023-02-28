@@ -132,126 +132,122 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                 ? const AlwaysScrollableScrollPhysics()
                 : const NeverScrollableScrollPhysics(),
             child: Stack(children: [
-              IgnorePointer(
-                ignoring: !_isDrawing,
+              Container(
+                color: Colors.transparent,
                 child: Container(
+                  width: MediaQuery.of(context).size.width * 1,
+                  // height: 2000,
                   color: Colors.transparent,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 1,
-                    // height: 2000,
-                    color: Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: Sizes.size48,
-                          right: Sizes.size60,
-                          left: Sizes.size24),
-                      child: Column(children: [
-                        const FractionallySizedBox(
-                          widthFactor: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: Sizes.size48,
+                        right: Sizes.size60,
+                        left: Sizes.size24),
+                    child: Column(children: [
+                      const FractionallySizedBox(
+                        widthFactor: 1,
+                      ),
+                      Gaps.v40,
+                      Stack(children: [
+                        SizedBox(
+                          height: Sizes.size80 * 3,
+                          child: TeXView(
+                            loadingWidgetBuilder: (context) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            },
+                            child: TeXViewDocument(
+                              _problem,
+                            ),
+                          ),
                         ),
-                        Gaps.v40,
+                        Positioned.fill(
+                            child: PointerInterceptor(
+                                child: Container(color: Colors.transparent)))
+                      ]),
+                      for (var image in _listImages)
+                        Column(
+                          children: [image, Gaps.v20],
+                        ),
+                      for (var i = 0; i < _listChoices.length; i++)
+                        Column(
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      height: Sizes.size44,
+                                      child: TeXView(
+                                        child: TeXViewDocument(
+                                          Problems.listChoicesNumber[i] +
+                                              Problems.gap +
+                                              _listChoices[i],
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned.fill(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _onTapAnswerIndex(i);
+                                        },
+                                        child: PointerInterceptor(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        Sizes.size20),
+                                                border: Border.all(
+                                                    color: i + 1 == _submitIndex
+                                                        ? Colors.black
+                                                        : Colors.transparent,
+                                                    width: Sizes.size1)),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            Gaps.v20,
+                          ],
+                        ),
+                      Gaps.v10,
+                      for (var i = 0; i < _listHints.length; i++)
                         Stack(children: [
-                          SizedBox(
-                            height: Sizes.size80 * 3,
-                            child: TeXView(
-                              loadingWidgetBuilder: (context) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              },
-                              child: TeXViewDocument(
-                                _problem,
-                              ),
+                          AnimatedOpacity(
+                            duration: const Duration(milliseconds: 300),
+                            opacity: hintIndex > i ? 1 : 0,
+                            child: Column(
+                              children: [
+                                hintTypeTextWidget(i),
+                                Gaps.v20,
+                                SizedBox(
+                                  height: 150,
+                                  child: TeXView(
+                                    child: TeXViewColumn(children: [
+                                      TeXViewDocument(_listHints[i],
+                                          style: const TeXViewStyle(
+                                              margin:
+                                                  TeXViewMargin.only(top: 10)))
+                                    ]),
+                                  ),
+                                ),
+                                _hintImg[i + 1] ?? Gaps.v10,
+                                Gaps.v40,
+                              ],
                             ),
                           ),
                           Positioned.fill(
-                              child: PointerInterceptor(
-                                  child: Container(color: Colors.transparent)))
-                        ]),
-                        for (var image in _listImages)
-                          Column(
-                            children: [image, Gaps.v20],
-                          ),
-                        for (var i = 0; i < _listChoices.length; i++)
-                          Column(
-                            children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        height: Sizes.size44,
-                                        child: TeXView(
-                                          child: TeXViewDocument(
-                                            Problems.listChoicesNumber[i] +
-                                                Problems.gap +
-                                                _listChoices[i],
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned.fill(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            _onTapAnswerIndex(i);
-                                          },
-                                          child: PointerInterceptor(
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.transparent,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          Sizes.size20),
-                                                  border: Border.all(
-                                                      color: i + 1 ==
-                                                              _submitIndex
-                                                          ? Colors.black
-                                                          : Colors.transparent,
-                                                      width: Sizes.size1)),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              Gaps.v20,
-                            ],
-                          ),
-                        Gaps.v10,
-                        for (var i = 0; i < _listHints.length; i++)
-                          Stack(children: [
-                            AnimatedOpacity(
-                              duration: const Duration(milliseconds: 300),
-                              opacity: hintIndex > i ? 1 : 0,
-                              child: Column(
-                                children: [
-                                  hintTypeTextWidget(i),
-                                  Gaps.v20,
-                                  SizedBox(
-                                    height: 150,
-                                    child: TeXView(
-                                      child: TeXViewColumn(children: [
-                                        TeXViewDocument(_listHints[i],
-                                            style: const TeXViewStyle(
-                                                margin: TeXViewMargin.only(
-                                                    top: 10)))
-                                      ]),
-                                    ),
-                                  ),
-                                  _hintImg[i + 1] ?? Gaps.v10,
-                                  Gaps.v40,
-                                ],
+                            child: PointerInterceptor(
+                              child: Container(
+                                color: Colors.transparent,
                               ),
                             ),
-                            Positioned.fill(
-                              child: PointerInterceptor(
-                                child: Container(
-                                  color: Colors.transparent,
-                                ),
-                              ),
-                            )
-                          ]),
-                      ]),
-                    ),
+                          )
+                        ]),
+                    ]),
                   ),
                 ),
               ),

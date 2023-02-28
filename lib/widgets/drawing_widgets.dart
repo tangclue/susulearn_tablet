@@ -48,11 +48,11 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
           Offset vectLast = (point - (linetemp.path.last));
           Offset vectMid = (vectStart + vectLast) / 2;
 
-          double lenStart = vectStart.distanceSquared;
-          double lenLast = vectLast.distanceSquared;
-          double lenMid = vectMid.distanceSquared;
-          double minLen = min(lenStart, min(lenLast, lenMid));
-          if (minLen < selectedWidth * 10) {
+          double lenStart2 = vectStart.distanceSquared;
+          double lenLast2 = vectLast.distanceSquared;
+          double lenMid2 = vectMid.distanceSquared;
+          double minLen2 = min(lenStart2, min(lenLast2, lenMid2));
+          if (minLen2 < pow(selectedWidth, 2) / 10) {
             lines.remove(linetemp);
             print("erased!!");
             continue;
@@ -177,7 +177,7 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
     return GestureDetector(
       onTap: () {
         selectedWidth = 100;
-        selectedColor = Colors.grey.shade200;
+        selectedColor = Colors.grey.withOpacity(0.1);
         _isErasing = true;
         setState(() {});
       },
