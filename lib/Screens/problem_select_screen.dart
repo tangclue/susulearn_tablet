@@ -42,24 +42,7 @@ class _ProblemSelectScreenState extends State<ProblemSelectScreen> {
             separatorBuilder: (context, index) {
               return Gaps.v16;
             },
-          )
-
-          // SingleChildScrollView(
-          //   child: Column(children: [
-          //     for (var index = 1;
-          //         index < Problems.listProblem.length + 1;
-          //         index++)
-          //       Column(children: [
-          //         SelectProblemButton(
-          //           function: _onTapProbplem,
-          //           text: "문제",
-          //           index: index,
-          //         ),
-          //         Gaps.v16,
-          //       ]),
-          //   ]),
-          // ),
-          ),
+          )),
     );
   }
 }
