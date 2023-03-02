@@ -102,24 +102,23 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
   }
 
   void _onTapPrev() {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => ProblemHintScreen(index: widget.index - 1),
-    //     ));
-    setState(() {});
-    widget.index = widget.index - 1;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProblemHintScreen(index: widget.index - 1),
+        ));
+    // setState(() {});
+    // widget.index = widget.index - 1;
   }
 
   void _onTapNext() {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => ProblemHintScreen(index: widget.index + 1),
-
-    //     ));
-    setState(() {});
-    widget.index = widget.index + 1;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProblemHintScreen(index: widget.index + 1),
+        ));
+    // setState(() {});
+    // widget.index = widget.index + 1;
   }
 
   @override
@@ -216,7 +215,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(10),
                                       height: Sizes.size44,
-                                      width: Sizes.size96,
+                                      width: Sizes.size96 * 1.5,
                                       child: TeXView(
                                         loadingWidgetBuilder: (context) {
                                           return const Center(

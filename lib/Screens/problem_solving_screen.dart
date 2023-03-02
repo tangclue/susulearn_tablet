@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:susulearn_tablet/Screens/example_screen.dart';
 
-import '../problems/problems.dart';
-
 class ProblemSolvingScreen extends StatefulWidget {
   ProblemSolvingScreen({super.key, required this.index});
   int index;
@@ -12,8 +10,8 @@ class ProblemSolvingScreen extends StatefulWidget {
 }
 
 class _ProblemSolvingScreenState extends State<ProblemSolvingScreen> {
-  late final int _problemNumber = Problems.listProblem.length;
-  // final int _problemNumber = 1;
+  // late final int _problemNumber = Problems.listProblem.length;
+  final int _problemNumber = 1;
 
   @override
   Widget build(BuildContext context) {
