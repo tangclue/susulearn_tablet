@@ -15,5 +15,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             primarySwatch: Colors.blue, scaffoldBackgroundColor: Colors.white),
         home: const LoginScreen());
+<<<<<<< Updated upstream
+=======
+    // home: const ProblemHintScreen(
+    //   index: 4,
+    // ));
+>>>>>>> Stashed changes
   }
 }
