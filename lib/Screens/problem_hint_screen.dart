@@ -1,58 +1,38 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
+import 'package:susulearn_tablet/widgets/grade_button.dart';
+import 'package:susulearn_tablet/widgets/hint_button.dart';
 
 import '../Constants/gaps.dart';
 import '../Constants/sizes.dart';
 import '../problems/problems.dart';
 import '../widgets/drawing_widgets.dart';
+import '../widgets/next_button.dart';
 
 class ProblemHintScreen extends StatefulWidget {
-  const ProblemHintScreen({super.key, required this.index});
-  final int index;
+  ProblemHintScreen({super.key, required this.index});
+  int index;
 
   @override
   State<ProblemHintScreen> createState() => _ProblemHintScreenState();
 }
 
 class _ProblemHintScreenState extends State<ProblemHintScreen> {
-  int hintIndex = 0;
-  int hintMax = 0;
-
-  String _problem = "";
-  List _listImages = [];
-  List _listChoices = [];
-  List _listHints = [];
-  Map _hintImg = {};
-  late int _ans;
-
+  late final int _problemNumber = Problems.listProblem.length;
+  late String _problem = Problems.listProblem[widget.index - 1];
+  late List _listImages = Problems.listImages[widget.index - 1];
+  late List _listChoices = Problems.listChoices[widget.index - 1];
+  late List _listHints = Problems.listHints[widget.index - 1];
+  late Map _hintImg = Problems.listHintImg[widget.index - 1];
+  late final int _ans = 3;
+  late int hintMax = Problems.listHints[widget.index - 1].length;
+  late final List<bool> _hintShowing = List.filled(hintMax, false);
   int _submitIndex = 0;
   bool _submitted = false;
   bool _corrected = false;
   bool _isDrawing = false;
-
-  void _onHintPressed(context) {
-    if (hintIndex < hintMax) {
-      hintIndex++;
-    }
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    hintMax = Problems.listHints[widget.index - 1].length;
-    setState(() {});
-
-    _problem = Problems.listProblem[widget.index - 1];
-    _listImages = Problems.listImages[widget.index - 1];
-    _listChoices = Problems.listChoices[widget.index - 1];
-    _listHints = Problems.listHints[widget.index - 1];
-    _hintImg = Problems.listHintImg[widget.index - 1];
-    _ans = 3;
-  }
 
   void clearExpressions() {
     _problem = "";
@@ -63,7 +43,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
     setState(() {});
   }
 
-  Widget hintTypeTextWidget(int i) {
+  Widget _hintTypeTextWidget(int i) {
     switch (i) {
       case 0:
         return const Text(
@@ -115,6 +95,33 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
     });
   }
 
+  void _onToggleHint({required int index}) {
+    setState(() {
+      _hintShowing[index] = !_hintShowing[index];
+    });
+  }
+
+  void _onTapPrev() {
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ProblemHintScreen(index: widget.index - 1),
+    //     ));
+    setState(() {});
+    widget.index = widget.index - 1;
+  }
+
+  void _onTapNext() {
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ProblemHintScreen(index: widget.index + 1),
+
+    //     ));
+    setState(() {});
+    widget.index = widget.index + 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -124,7 +131,36 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("문제 ${widget.index}"),
+          title: const Text("2021 고등학교 1학년 3월 모의고사"),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                _onToggleHint(index: 0);
+              },
+              child: const HintButton(
+                text: "용어\n힌트",
+              ),
+            ),
+            Gaps.h10,
+            GestureDetector(
+              onTap: () {
+                _onToggleHint(index: 1);
+              },
+              child: const HintButton(
+                text: "개념\n힌트",
+              ),
+            ),
+            Gaps.h10,
+            GestureDetector(
+              onTap: () {
+                _onToggleHint(index: 2);
+              },
+              child: const HintButton(
+                text: "해설\n힌트",
+              ),
+            ),
+            Gaps.h10,
+          ],
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -140,7 +176,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                   color: Colors.transparent,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        top: Sizes.size48,
+                        // top: Sizes.size12,
                         right: Sizes.size60,
                         left: Sizes.size24),
                     child: Column(children: [
@@ -169,9 +205,10 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                         Column(
                           children: [image, Gaps.v20],
                         ),
-                      for (var i = 0; i < _listChoices.length; i++)
-                        Column(
-                          children: [
+                      Wrap(
+                        // scrollDirection: Axis.horizontal,
+                        children: [
+                          for (var i = 0; i < _listChoices.length; i++)
                             Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: Stack(
@@ -179,8 +216,13 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(10),
                                       height: Sizes.size44,
-                                      width: Sizes.size96 * 1.5,
+                                      width: Sizes.size96,
                                       child: TeXView(
+                                        loadingWidgetBuilder: (context) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        },
                                         child: TeXViewDocument(
                                           Problems.listChoicesNumber[i] +
                                               Problems.gap +
@@ -211,22 +253,26 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                     ),
                                   ],
                                 )),
-                            Gaps.v20,
-                          ],
-                        ),
+                          Gaps.v20,
+                        ],
+                      ),
                       Gaps.v10,
                       for (var i = 0; i < _listHints.length; i++)
                         Stack(children: [
                           AnimatedOpacity(
                             duration: const Duration(milliseconds: 300),
-                            opacity: hintIndex > i ? 1 : 0,
+                            opacity: _hintShowing[i] ? 1 : 0,
                             child: Column(
                               children: [
-                                hintTypeTextWidget(i),
+                                _hintTypeTextWidget(i),
                                 Gaps.v20,
                                 SizedBox(
                                   height: 150,
                                   child: TeXView(
+                                    loadingWidgetBuilder: (context) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    },
                                     child: TeXViewColumn(children: [
                                       TeXViewDocument(_listHints[i],
                                           style: const TeXViewStyle(
@@ -252,22 +298,33 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                   ),
                 ),
               ),
+              Positioned(
+                  top: Sizes.size12,
+                  left: Sizes.size12,
+                  child: AnimatedOpacity(
+                    opacity: (_submitted && !_corrected) ? 1 : 0,
+                    duration: const Duration(milliseconds: 500),
+                    child: FaIcon(
+                      FontAwesomeIcons.x,
+                      size: Sizes.size80,
+                      color: Colors.red.withOpacity(0.5),
+                    ),
+                  )),
+              Positioned(
+                  top: Sizes.size12,
+                  left: Sizes.size12,
+                  child: AnimatedOpacity(
+                      opacity: (_submitted && _corrected) ? 1 : 0,
+                      duration: const Duration(milliseconds: 500),
+                      child: FaIcon(
+                        FontAwesomeIcons.circle,
+                        size: Sizes.size80,
+                        color: Colors.green.withOpacity(0.5),
+                      ))),
               IgnorePointer(
                 ignoring: !_isDrawing,
                 child: _isDrawing ? const DrawingWidgets() : const SizedBox(),
               ),
-              Positioned(
-                  top: Sizes.size12,
-                  right: Sizes.size60,
-                  child: Column(
-                    children: [
-                      IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.paperPlane),
-                        onPressed: _onPressedSubmit,
-                      ),
-                      const Text("채점하기")
-                    ],
-                  )),
               Positioned(
                   top: Sizes.size12,
                   right: Sizes.size12,
@@ -282,40 +339,59 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                       const Text("그리기")
                     ],
                   )),
-              Positioned(
-                  top: Sizes.size60,
-                  left: Sizes.size12,
-                  child: AnimatedOpacity(
-                    opacity: (_submitted && !_corrected) ? 1 : 0,
-                    duration: const Duration(milliseconds: 500),
-                    child: FaIcon(
-                      FontAwesomeIcons.x,
-                      size: Sizes.size80,
-                      color: Colors.red.withOpacity(0.5),
-                    ),
-                  )),
-              Positioned(
-                  top: Sizes.size60,
-                  left: Sizes.size12,
-                  child: AnimatedOpacity(
-                      opacity: (_submitted && _corrected) ? 1 : 0,
-                      duration: const Duration(milliseconds: 500),
-                      child: FaIcon(
-                        FontAwesomeIcons.circle,
-                        size: Sizes.size80,
-                        color: Colors.green.withOpacity(0.5),
-                      )))
             ]),
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-            child: CupertinoButton(
-          color: Colors.amber,
-          onPressed: () {
-            _onHintPressed(context);
-          },
-          child: Text("Hint! ($hintIndex / $hintMax)"),
-        )),
+          padding: const EdgeInsets.symmetric(
+              vertical: Sizes.size24, horizontal: Sizes.size20),
+          child: IntrinsicHeight(
+            child: Stack(children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (widget.index > 1)
+                          GestureDetector(
+                            onTap: _onTapPrev,
+                            child: const NextButton(
+                              text: "< prev",
+                            ),
+                          ),
+                        Gaps.h24,
+                        Text("${widget.index} / $_problemNumber"),
+                        Gaps.h24,
+                        if (widget.index < _problemNumber)
+                          GestureDetector(
+                            onTap: _onTapNext,
+                            child: const NextButton(
+                              text: "next >",
+                            ),
+                          ),
+                      ]),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                          onTap: _onPressedSubmit,
+                          child: const GradeButton(text: "채점\n하기")),
+                      Gaps.v10,
+                      const GradeButton(text: "전체\n채점")
+                    ],
+                  )
+                ],
+              ),
+            ]),
+          ),
+        ),
       ),
     );
   }

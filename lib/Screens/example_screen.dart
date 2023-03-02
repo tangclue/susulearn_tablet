@@ -1,201 +1,355 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_tex/flutter_tex.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:susulearn_tablet/widgets/choice_widget.dart';
+import 'package:susulearn_tablet/widgets/grade_button.dart';
+import 'package:susulearn_tablet/widgets/hint_button.dart';
+import 'package:susulearn_tablet/widgets/hint_widget.dart';
+import 'package:susulearn_tablet/widgets/problem_widget.dart';
 
-// import '../features/sketcher.dart';
+import '../Constants/gaps.dart';
+import '../Constants/sizes.dart';
+import '../problems/problems.dart';
+import '../widgets/drawing_widgets.dart';
+import '../widgets/next_button.dart';
 
-// class ExampleScreen extends StatefulWidget {
-//   const ExampleScreen({super.key});
+class ExampleScreen1 extends StatefulWidget {
+  ExampleScreen1({super.key, required this.index, this.isShowing = false});
+  int index;
+  bool isShowing = false;
+  @override
+  State<ExampleScreen1> createState() => _ExampleScreen1State();
+}
 
-//   @override
-//   State<ExampleScreen> createState() => _ExampleScreenState();
-// }
+class _ExampleScreen1State extends State<ExampleScreen1> {
+  late final int _problemNumber = Problems.listProblem.length;
+  late String _problem = Problems.listProblem[widget.index - 1];
+  late List _listImages = Problems.listImages[widget.index - 1];
+  late List _listChoices = Problems.listChoices[widget.index - 1];
+  late List _listHints = Problems.listHints[widget.index - 1];
+  late Map _hintImg = Problems.listHintImg[widget.index - 1];
+  late final int _ans = 3;
+  late int hintMax = Problems.listHints[widget.index - 1].length;
+  late final List<bool> _hintShowing = List.filled(hintMax, false);
+  int _submitIndex = 0;
+  bool _submitted = false;
+  bool _corrected = false;
+  bool _isDrawing = false;
 
-// class _ExampleScreenState extends State<ExampleScreen> {
-//   Color selectedColor = Colors.black;
-//   double selectedWidth = 3;
-//   List<DrawnLine> lines = <DrawnLine>[];
-//   DrawnLine line = DrawnLine([], Colors.black, 0);
+  void clearExpressions() {
+    _problem = "";
+    _listImages = [];
+    _listChoices = [];
+    _listHints = [];
+    _hintImg = {};
+    setState(() {});
+  }
 
-//   void _onPanStart(DragStartDetails details) {
-//     print('User started drawing');
-//     final box = context.findRenderObject() as RenderBox;
-//     final point = box.globalToLocal(details.localPosition);
+  Widget _hintTypeTextWidget(int i) {
+    switch (i) {
+      case 0:
+        return const Text(
+          "용어 힌트",
+          style: TextStyle(fontSize: Sizes.size16, fontWeight: FontWeight.w800),
+        );
 
-//     setState(() {
-//       line = DrawnLine([point], selectedColor, selectedWidth);
-//       lines.add(line);
-//     });
-//   }
+      case 1:
+        return const Text(
+          "개념 힌트",
+          style: TextStyle(fontSize: Sizes.size16, fontWeight: FontWeight.w800),
+        );
+      case 2:
+        return const Text("해설 힌트",
+            style:
+                TextStyle(fontSize: Sizes.size16, fontWeight: FontWeight.w800));
+      default:
+        return const Text("추가 힌트",
+            style:
+                TextStyle(fontSize: Sizes.size16, fontWeight: FontWeight.w800));
+    }
+  }
 
-//   void _onPanUpdate(DragUpdateDetails details) {
-//     final box = context.findRenderObject() as RenderBox;
-//     final point = box.globalToLocal(details.localPosition);
+  final ScrollController _scrollController = ScrollController();
 
-//     final path = List.from(line.path)..add(point);
-//     line = DrawnLine(path, selectedColor, selectedWidth);
-//     setState(() {
-//       if (lines.isEmpty) {
-//         lines.add(line);
-//       } else {
-//         lines[lines.length - 1] = line;
-//       }
-//     });
-//   }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
-//   void _onPanEnd(DragEndDetails details) {
-//     final path = List.from(line.path)..add(null);
+  void _onPressedSubmit() {
+    _submitted = true;
+    _corrected = (_submitIndex == _ans);
 
-//     setState(() {
-//       lines.add(line);
-//     });
-//   }
+    setState(() {});
+  }
 
-//   void _clear() {
-//     setState(() {
-//       lines = [];
-//       line = DrawnLine([], Colors.black, 0);
-//       selectedWidth = 5;
-//       selectedColor = Colors.black;
-//     });
-//   }
+  void _onTapAnswerIndex(int i) {
+    setState(() {
+      _submitIndex = i + 1;
+      print("$_submitIndex");
+    });
+  }
 
-//   Widget buildColorButton(Color color) {
-//     return Padding(
-//       padding: const EdgeInsets.all(4.0),
-//       child: FloatingActionButton(
-//         mini: true,
-//         backgroundColor: color,
-//         shape: Border.all(color: Colors.black),
-//         child: Container(),
-//         onPressed: () {
-//           setState(() {
-//             selectedColor = color;
-//             selectedWidth = 5;
-//           });
-//         },
-//       ),
-//     );
-//   }
+  void _onToggleDrawing() {
+    setState(() {
+      _isDrawing = !_isDrawing;
+    });
+  }
 
-//   Widget buildStrokeButton(double strokeWidth) {
-//     return GestureDetector(
-//       onTap: () {
-//         selectedWidth = strokeWidth;
-//       },
-//       child: Padding(
-//         padding: const EdgeInsets.all(4.0),
-//         child: Container(
-//           width: strokeWidth * 2,
-//           height: strokeWidth * 2,
-//           decoration: BoxDecoration(
-//               color: selectedColor,
-//               borderRadius: BorderRadius.circular(30.0),
-//               border: Border.all(color: Colors.black, width: 3)),
-//         ),
-//       ),
-//     );
-//   }
+  void _onToggleHint({required int index}) {
+    setState(() {
+      _hintShowing[index] = !_hintShowing[index];
+    });
+  }
 
-//   Widget buildStrokeToolbar() {
-//     return Positioned(
-//       bottom: 100.0,
-//       right: 10.0,
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         children: [
-//           buildStrokeButton(5.0),
-//           buildStrokeButton(10.0),
-//           buildStrokeButton(15.0),
-//         ],
-//       ),
-//     );
-//   }
+  void _onTapPrev() {
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ExampleScreen1(index: widget.index - 1),
+    //     ));
+    setState(() {});
+    widget.index = widget.index - 1;
+  }
 
-//   Widget buildColorToolbar() {
-//     return Positioned(
-//       top: 40.0,
-//       right: 10.0,
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         children: [
-//           buildClearButton(),
-//           const Divider(
-//             height: 10.0,
-//           ),
-//           buildColorButton(Colors.black),
-//           buildColorButton(Colors.red),
-//           buildColorButton(Colors.blueAccent),
-//           buildColorButton(Colors.green),
-//           const Divider(
-//             height: 10.0,
-//           ),
-//           buildEraserButton(),
-//         ],
-//       ),
-//     );
-//   }
+  void _onTapNext() {
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ExampleScreen1(index: widget.index + 1),
 
-//   Widget buildClearButton() {
-//     return GestureDetector(
-//       onTap: _clear,
-//       child: const CircleAvatar(
-//         child: Icon(
-//           Icons.create,
-//           size: 20.0,
-//           color: Colors.white,
-//         ),
-//       ),
-//     );
-//   }
+    //     ));
+    setState(() {});
+    widget.index = widget.index + 1;
+  }
 
-//   Widget buildEraserButton() {
-//     return GestureDetector(
-//       onTap: () {
-//         selectedWidth = 200;
-//         selectedColor = Colors.grey.shade200;
-//         setState(() {});
-//       },
-//       child: const CircleAvatar(
-//         child: Icon(
-//           Icons.rectangle,
-//           size: 20.0,
-//           color: Colors.white,
-//         ),
-//       ),
-//     );
-//   }
+  Future<Widget> _problemfuture() async {
+    print("Rendered!");
+    return TeXView(
+      child: TeXViewDocument(
+        _problem,
+      ),
+    );
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         appBar: AppBar(
-//           title: const Text("Example"),
-//         ),
-//         body: Stack(children: [
-//           GestureDetector(
-//             onPanStart: _onPanStart,
-//             onPanUpdate: _onPanUpdate,
-//             onPanEnd: _onPanEnd,
-//             child: Container(
-//               width: MediaQuery.of(context).size.width,
-//               height: MediaQuery.of(context).size.height,
-//               color: Colors.grey.shade200,
-//               child: CustomPaint(
-//                 painter: Sketcher(lines: lines),
-//               ),
-//             ),
-//           ),
-//           buildColorToolbar(),
-//           buildStrokeToolbar(),
-//         ]));
-//   }
-// }
-
-// class DrawnLine {
-//   final List<dynamic> path;
-//   final Color color;
-//   final double width;
-
-//   DrawnLine(this.path, this.color, this.width);
-// }
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () {
+        clearExpressions();
+        return Future.value(true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("2021 고등학교 1학년 3월 모의고사"),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                _onToggleHint(index: 0);
+              },
+              child: const HintButton(
+                text: "용어\n힌트",
+              ),
+            ),
+            Gaps.h10,
+            GestureDetector(
+              onTap: () {
+                _onToggleHint(index: 1);
+              },
+              child: const HintButton(
+                text: "개념\n힌트",
+              ),
+            ),
+            Gaps.h10,
+            GestureDetector(
+              onTap: () {
+                _onToggleHint(index: 2);
+              },
+              child: const HintButton(
+                text: "해설\n힌트",
+              ),
+            ),
+            Gaps.h10,
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: !_isDrawing
+                ? const AlwaysScrollableScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
+            child: Stack(children: [
+              Container(
+                color: Colors.transparent,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 1,
+                  // height: 2000,
+                  color: Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        // top: Sizes.size12,
+                        right: Sizes.size60,
+                        left: Sizes.size24),
+                    child: Column(children: [
+                      const FractionallySizedBox(
+                        widthFactor: 1,
+                      ),
+                      Gaps.v40,
+                      ProblemWidget(
+                        problem: _problem,
+                        isShowing: widget.isShowing,
+                      ),
+                      for (var image in _listImages)
+                        Column(
+                          children: [image, Gaps.v20],
+                        ),
+                      Wrap(
+                        // scrollDirection: Axis.horizontal,
+                        children: [
+                          for (var i = 0; i < _listChoices.length; i++)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _onTapAnswerIndex(i);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: Sizes.size1,
+                                          color: _submitIndex == i + 1
+                                              ? Colors.black
+                                              : Colors.transparent),
+                                      borderRadius:
+                                          BorderRadius.circular(Sizes.size6)),
+                                  child: ChoiceWidget(
+                                      choice: Problems.listChoicesNumber[i] +
+                                          Problems.gap +
+                                          _listChoices[i],
+                                      isShowing: widget.isShowing),
+                                ),
+                              ),
+                            ),
+                          Gaps.v20,
+                        ],
+                      ),
+                      Gaps.v10,
+                      for (var i = 0; i < _listHints.length; i++)
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 300),
+                          opacity: _hintShowing[i] ? 1 : 0,
+                          child: Column(
+                            children: [
+                              _hintTypeTextWidget(i),
+                              Gaps.v20,
+                              HintWidget(
+                                hint: _listHints[i],
+                                isShowing: widget.isShowing,
+                              ),
+                              _hintImg[i + 1] ?? Gaps.v10,
+                              Gaps.v40,
+                            ],
+                          ),
+                        ),
+                    ]),
+                  ),
+                ),
+              ),
+              Positioned(
+                  top: Sizes.size12,
+                  left: Sizes.size12,
+                  child: AnimatedOpacity(
+                    opacity: (_submitted && !_corrected) ? 1 : 0,
+                    duration: const Duration(milliseconds: 500),
+                    child: FaIcon(
+                      FontAwesomeIcons.x,
+                      size: Sizes.size80,
+                      color: Colors.red.withOpacity(0.5),
+                    ),
+                  )),
+              Positioned(
+                  top: Sizes.size12,
+                  left: Sizes.size12,
+                  child: AnimatedOpacity(
+                      opacity: (_submitted && _corrected) ? 1 : 0,
+                      duration: const Duration(milliseconds: 500),
+                      child: FaIcon(
+                        FontAwesomeIcons.circle,
+                        size: Sizes.size80,
+                        color: Colors.green.withOpacity(0.5),
+                      ))),
+              IgnorePointer(
+                ignoring: !_isDrawing,
+                child: _isDrawing ? const DrawingWidgets() : const SizedBox(),
+              ),
+              Positioned(
+                  top: Sizes.size12,
+                  right: Sizes.size12,
+                  child: Column(
+                    children: [
+                      IconButton(
+                        icon: !_isDrawing
+                            ? const FaIcon(FontAwesomeIcons.pencil)
+                            : const FaIcon(FontAwesomeIcons.ban),
+                        onPressed: _onToggleDrawing,
+                      ),
+                      const Text("그리기")
+                    ],
+                  )),
+            ]),
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          padding: const EdgeInsets.symmetric(
+              vertical: Sizes.size24, horizontal: Sizes.size20),
+          child: IntrinsicHeight(
+            child: Stack(children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (widget.index > 1)
+                          GestureDetector(
+                            onTap: _onTapPrev,
+                            child: const NextButton(
+                              text: "< prev",
+                            ),
+                          ),
+                        Gaps.h24,
+                        Text("${widget.index} / $_problemNumber"),
+                        Gaps.h24,
+                        if (widget.index < _problemNumber)
+                          GestureDetector(
+                            onTap: _onTapNext,
+                            child: const NextButton(
+                              text: "next >",
+                            ),
+                          ),
+                      ]),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                          onTap: _onPressedSubmit,
+                          child: const GradeButton(text: "채점\n하기")),
+                      Gaps.v10,
+                      const GradeButton(text: "전체\n채점")
+                    ],
+                  )
+                ],
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:susulearn_tablet/Screens/problem_hint_screen.dart';
+import 'package:susulearn_tablet/Screens/problem_solving_screen.dart';
 
 import '../Constants/gaps.dart';
 import '../Constants/sizes.dart';
@@ -16,7 +16,7 @@ class ProblemSelectScreen extends StatefulWidget {
 class _ProblemSelectScreenState extends State<ProblemSelectScreen> {
   void _onTapProbplem(context, index) {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ProblemHintScreen(
+        builder: (context) => ProblemSolvingScreen(
               index: index,
             )));
   }
