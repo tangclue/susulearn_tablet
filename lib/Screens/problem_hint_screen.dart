@@ -179,6 +179,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(10),
                                       height: Sizes.size44,
+                                      width: Sizes.size96 * 1.5,
                                       child: TeXView(
                                         child: TeXViewDocument(
                                           Problems.listChoicesNumber[i] +
