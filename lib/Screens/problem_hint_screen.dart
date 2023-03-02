@@ -12,8 +12,8 @@ import '../widgets/drawing_widgets.dart';
 import '../widgets/next_button.dart';
 
 class ProblemHintScreen extends StatefulWidget {
-  const ProblemHintScreen({super.key, required this.index});
-  final int index;
+  ProblemHintScreen({super.key, required this.index});
+  int index;
 
   @override
   State<ProblemHintScreen> createState() => _ProblemHintScreenState();
@@ -102,19 +102,24 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
   }
 
   void _onTapPrev() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProblemHintScreen(index: widget.index - 1),
-        ));
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ProblemHintScreen(index: widget.index - 1),
+    //     ));
+    setState(() {});
+    widget.index = widget.index - 1;
   }
 
   void _onTapNext() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProblemHintScreen(index: widget.index + 1),
-        ));
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ProblemHintScreen(index: widget.index + 1),
+
+    //     ));
+    setState(() {});
+    widget.index = widget.index + 1;
   }
 
   @override
@@ -213,6 +218,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                       height: Sizes.size44,
                                       width: Sizes.size96,
                                       child: TeXView(
+                                        loadingWidgetBuilder: (context) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        },
                                         child: TeXViewDocument(
                                           Problems.listChoicesNumber[i] +
                                               Problems.gap +
@@ -259,6 +269,10 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                 SizedBox(
                                   height: 150,
                                   child: TeXView(
+                                    loadingWidgetBuilder: (context) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    },
                                     child: TeXViewColumn(children: [
                                       TeXViewDocument(_listHints[i],
                                           style: const TeXViewStyle(
@@ -284,24 +298,6 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                   ),
                 ),
               ),
-              IgnorePointer(
-                ignoring: !_isDrawing,
-                child: _isDrawing ? const DrawingWidgets() : const SizedBox(),
-              ),
-              Positioned(
-                  top: Sizes.size12,
-                  right: Sizes.size12,
-                  child: Column(
-                    children: [
-                      IconButton(
-                        icon: !_isDrawing
-                            ? const FaIcon(FontAwesomeIcons.pencil)
-                            : const FaIcon(FontAwesomeIcons.ban),
-                        onPressed: _onToggleDrawing,
-                      ),
-                      const Text("그리기")
-                    ],
-                  )),
               Positioned(
                   top: Sizes.size12,
                   left: Sizes.size12,
@@ -324,7 +320,25 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                         FontAwesomeIcons.circle,
                         size: Sizes.size80,
                         color: Colors.green.withOpacity(0.5),
-                      )))
+                      ))),
+              IgnorePointer(
+                ignoring: !_isDrawing,
+                child: _isDrawing ? const DrawingWidgets() : const SizedBox(),
+              ),
+              Positioned(
+                  top: Sizes.size12,
+                  right: Sizes.size12,
+                  child: Column(
+                    children: [
+                      IconButton(
+                        icon: !_isDrawing
+                            ? const FaIcon(FontAwesomeIcons.pencil)
+                            : const FaIcon(FontAwesomeIcons.ban),
+                        onPressed: _onToggleDrawing,
+                      ),
+                      const Text("그리기")
+                    ],
+                  )),
             ]),
           ),
         ),
@@ -368,9 +382,9 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                     children: [
                       GestureDetector(
                           onTap: _onPressedSubmit,
-                          child: const GradeButton(text: "채점 하기")),
+                          child: const GradeButton(text: "채점\n하기")),
                       Gaps.v10,
-                      const GradeButton(text: "전체 채점")
+                      const GradeButton(text: "전체\n채점")
                     ],
                   )
                 ],
