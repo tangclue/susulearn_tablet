@@ -553,4 +553,6 @@ class Problems {
   ];
 
   static String gap = "\\(\\quad\\)";
+
+  static List<int> listAns = [2, 5, 5, 4, 3, 4, 4, 1, 2, 3];
 }

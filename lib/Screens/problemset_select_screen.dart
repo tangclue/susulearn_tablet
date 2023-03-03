@@ -30,6 +30,12 @@ class _ProblemsetSelectScreenState extends State<ProblemsetSelectScreen> {
         child: Column(children: [
           SelectProblemsetButton(
             function: _onTapProbplemSelect,
+            text: "초등학교 6학년",
+            isActivated: false,
+          ),
+          Gaps.v16,
+          SelectProblemsetButton(
+            function: _onTapProbplemSelect,
             text: "중학교 1학년",
             isActivated: false,
           ),
@@ -43,24 +49,18 @@ class _ProblemsetSelectScreenState extends State<ProblemsetSelectScreen> {
           SelectProblemsetButton(
             function: _onTapProbplemSelect,
             text: "중학교 3학년",
-            isActivated: false,
-          ),
-          Gaps.v16,
-          SelectProblemsetButton(
-            function: _onTapProbplemSelect,
-            text: "고등학교 1학년",
             isActivated: true,
           ),
           Gaps.v16,
           SelectProblemsetButton(
             function: _onTapProbplemSelect,
-            text: "고등학교 2학년",
+            text: "고등학교 1학년",
             isActivated: false,
           ),
           Gaps.v16,
           SelectProblemsetButton(
             function: _onTapProbplemSelect,
-            text: "고등학교 3학년",
+            text: "고등학교 2학년",
             isActivated: false,
           ),
         ]),

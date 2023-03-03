@@ -26,7 +26,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
   late List _listChoices = Problems.listChoices[widget.index - 1];
   late List _listHints = Problems.listHints[widget.index - 1];
   late Map _hintImg = Problems.listHintImg[widget.index - 1];
-  late final int _ans = 3;
+  late final int _ans = Problems.listAns[widget.index - 1];
   late int hintMax = Problems.listHints[widget.index - 1].length;
   late final List<bool> _hintShowing = List.filled(hintMax, false);
   int _submitIndex = 0;
