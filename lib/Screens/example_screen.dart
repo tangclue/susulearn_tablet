@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:susulearn_tablet/widgets/choice_widget.dart';
-import 'package:susulearn_tablet/widgets/grade_button.dart';
 import 'package:susulearn_tablet/widgets/hint_button.dart';
 import 'package:susulearn_tablet/widgets/hint_widget.dart';
 import 'package:susulearn_tablet/widgets/problem_widget.dart';
@@ -11,7 +10,6 @@ import '../Constants/gaps.dart';
 import '../Constants/sizes.dart';
 import '../problems/problems.dart';
 import '../widgets/drawing_widgets.dart';
-import '../widgets/next_button.dart';
 
 class ExampleScreen1 extends StatefulWidget {
   ExampleScreen1({super.key, required this.index, this.isShowing = false});
@@ -32,8 +30,8 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
   late int hintMax = Problems.listHints[widget.index - 1].length;
   late final List<bool> _hintShowing = List.filled(hintMax, false);
   int _submitIndex = 0;
-  bool _submitted = false;
-  bool _corrected = false;
+  final bool _submitted = false;
+  final bool _corrected = false;
   bool _isDrawing = false;
 
   void clearExpressions() {
@@ -77,17 +75,9 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
     super.dispose();
   }
 
-  void _onPressedSubmit() {
-    _submitted = true;
-    _corrected = (_submitIndex == _ans);
-
-    setState(() {});
-  }
-
   void _onTapAnswerIndex(int i) {
     setState(() {
       _submitIndex = i + 1;
-      print("$_submitIndex");
     });
   }
 
@@ -101,27 +91,6 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
     setState(() {
       _hintShowing[index] = !_hintShowing[index];
     });
-  }
-
-  void _onTapPrev() {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => ExampleScreen1(index: widget.index - 1),
-    //     ));
-    setState(() {});
-    widget.index = widget.index - 1;
-  }
-
-  void _onTapNext() {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => ExampleScreen1(index: widget.index + 1),
-
-    //     ));
-    setState(() {});
-    widget.index = widget.index + 1;
   }
 
   Future<Widget> _problemfuture() async {
@@ -296,56 +265,6 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
                       const Text("그리기")
                     ],
                   )),
-            ]),
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          padding: const EdgeInsets.symmetric(
-              vertical: Sizes.size24, horizontal: Sizes.size20),
-          child: IntrinsicHeight(
-            child: Stack(children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (widget.index > 1)
-                          GestureDetector(
-                            onTap: _onTapPrev,
-                            child: const NextButton(
-                              text: "< prev",
-                            ),
-                          ),
-                        Gaps.h24,
-                        Text("${widget.index} / $_problemNumber"),
-                        Gaps.h24,
-                        if (widget.index < _problemNumber)
-                          GestureDetector(
-                            onTap: _onTapNext,
-                            child: const NextButton(
-                              text: "next >",
-                            ),
-                          ),
-                      ]),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                          onTap: _onPressedSubmit,
-                          child: const GradeButton(text: "채점\n하기")),
-                      Gaps.v10,
-                      const GradeButton(text: "전체\n채점")
-                    ],
-                  )
-                ],
-              ),
             ]),
           ),
         ),

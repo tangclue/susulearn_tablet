@@ -34,7 +34,11 @@ class _HintWidgetState extends State<HintWidget> {
           child: FutureBuilder(
             future: _hintfuture(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
+              if (snapshot.hasError) {
+                print("ERROR!");
+                setState(() {});
+                return const SizedBox();
+              } else if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData &&
                   widget.isShowing) {
                 return Container(

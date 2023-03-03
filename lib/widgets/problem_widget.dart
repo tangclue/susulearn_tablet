@@ -33,7 +33,11 @@ class _ProblemWidgetState extends State<ProblemWidget> {
           child: FutureBuilder(
             future: _problemfuture(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
+              if (snapshot.hasError) {
+                print("ERROR!");
+                setState(() {});
+                return const SizedBox();
+              } else if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData &&
                   widget.isShowing) {
                 return Container(

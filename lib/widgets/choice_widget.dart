@@ -35,7 +35,11 @@ class _ChoiceWidgetState extends State<ChoiceWidget> {
           child: FutureBuilder(
             future: _choicefuture(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
+              if (snapshot.hasError) {
+                setState(() {});
+                print("ERROR!");
+                return const SizedBox();
+              } else if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData &&
                   widget.isShowing) {
                 return Container(

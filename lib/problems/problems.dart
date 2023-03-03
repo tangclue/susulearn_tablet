@@ -545,11 +545,12 @@ class Problems {
     _convert2FlutterTexListSting(choices30),
   ];
   static List<String> listChoicesNumber = [
-    "\\(\\textcircled{1}\\)",
-    "\\(\\textcircled{2}\\)",
-    "\\(\\textcircled{3}\\)",
-    "\\(\\textcircled{4}\\)",
-    "\\(\\textcircled{5}\\)",
+    "(1)",
+    "(2)",
+    "(3)",
+    "(4)",
+    "(5)",
+    // "\\(\\textcircled{5}\\)",
   ];
 
   static String gap = "\\(\\quad\\)";
