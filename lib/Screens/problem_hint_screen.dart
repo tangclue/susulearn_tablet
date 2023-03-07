@@ -7,27 +7,60 @@ import 'package:susulearn_tablet/widgets/hint_button.dart';
 
 import '../Constants/gaps.dart';
 import '../Constants/sizes.dart';
-import '../problems/problems.dart';
+import '../problems/problemsG4C0.dart';
+import '../problems/problemsG4C1.dart';
 import '../widgets/drawing_widgets.dart';
 import '../widgets/next_button.dart';
 
 class ProblemHintScreen extends StatefulWidget {
-  ProblemHintScreen({super.key, required this.index});
+  ProblemHintScreen(
+      {super.key,
+      required this.index,
+      required this.grade,
+      required this.chapter});
   int index;
+  int grade;
+  int chapter;
 
   @override
   State<ProblemHintScreen> createState() => _ProblemHintScreenState();
 }
 
 class _ProblemHintScreenState extends State<ProblemHintScreen> {
-  late final int _problemNumber = Problems.listProblem.length;
-  late String _problem = Problems.listProblem[widget.index - 1];
-  late List _listImages = Problems.listImages[widget.index - 1];
-  late List _listChoices = Problems.listChoices[widget.index - 1];
-  late List _listHints = Problems.listHints[widget.index - 1];
-  late Map _hintImg = Problems.listHintImg[widget.index - 1];
-  late final int _ans = Problems.listAns[widget.index - 1];
-  late int hintMax = Problems.listHints[widget.index - 1].length;
+  late final int problemNumber = ProblemsG4C1.listProblem.length;
+  late String problem = ProblemsG4C1.listProblem[widget.index - 1];
+  late List listImages = ProblemsG4C1.listImages[widget.index - 1];
+  late List listChoices = ProblemsG4C1.listChoices[widget.index - 1];
+  late List listHints = ProblemsG4C1.listHints[widget.index - 1];
+  late Map hintImg = ProblemsG4C1.listHintImg[widget.index - 1];
+  late final int ans = ProblemsG4C1.listAns[widget.index - 1];
+  late int hintMax = ProblemsG4C1.listHints[widget.index - 1].length;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.grade == 4) {
+      if (widget.chapter == 0) {
+        late final int problemNumber = ProblemsG4C0.listProblem.length;
+        late String problem = ProblemsG4C0.listProblem[widget.index - 1];
+        late List listImages = ProblemsG4C0.listImages[widget.index - 1];
+        late List listChoices = ProblemsG4C0.listChoices[widget.index - 1];
+        late List listHints = ProblemsG4C0.listHints[widget.index - 1];
+        late Map hintImg = ProblemsG4C0.listHintImg[widget.index - 1];
+        late final int ans = ProblemsG4C0.listAns[widget.index - 1];
+        late int hintMax = ProblemsG4C0.listHints[widget.index - 1].length;
+      }
+    } else {
+      late final int problemNumber = ProblemsG4C1.listProblem.length;
+      late String problem = ProblemsG4C1.listProblem[widget.index - 1];
+      late List listImages = ProblemsG4C1.listImages[widget.index - 1];
+      late List listChoices = ProblemsG4C1.listChoices[widget.index - 1];
+      late List listHints = ProblemsG4C1.listHints[widget.index - 1];
+      late Map hintImg = ProblemsG4C1.listHintImg[widget.index - 1];
+      late final int ans = ProblemsG4C1.listAns[widget.index - 1];
+      late int hintMax = ProblemsG4C1.listHints[widget.index - 1].length;
+    }
+  }
+
   late final List<bool> _hintShowing = List.filled(hintMax, false);
   int _submitIndex = 0;
   bool _submitted = false;
@@ -35,11 +68,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
   bool _isDrawing = false;
 
   void clearExpressions() {
-    _problem = "";
-    _listImages = [];
-    _listChoices = [];
-    _listHints = [];
-    _hintImg = {};
+    problem = "";
+    listImages = [];
+    listChoices = [];
+    listHints = [];
+    hintImg = {};
     setState(() {});
   }
 
@@ -77,7 +110,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
 
   void _onPressedSubmit() {
     _submitted = true;
-    _corrected = (_submitIndex == _ans);
+    _corrected = (_submitIndex == ans);
 
     setState(() {});
   }
@@ -105,7 +138,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ProblemHintScreen(index: widget.index - 1),
+          builder: (context) => ProblemHintScreen(
+            index: widget.index - 1,
+            chapter: widget.chapter,
+            grade: widget.grade,
+          ),
         ));
     // setState(() {});
     // widget.index = widget.index - 1;
@@ -115,7 +152,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ProblemHintScreen(index: widget.index + 1),
+          builder: (context) => ProblemHintScreen(
+            index: widget.index + 1,
+            chapter: widget.chapter,
+            grade: widget.grade,
+          ),
         ));
     // setState(() {});
     // widget.index = widget.index + 1;
@@ -192,7 +233,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                   child: CircularProgressIndicator());
                             },
                             child: TeXViewDocument(
-                              _problem,
+                              problem,
                             ),
                           ),
                         ),
@@ -200,22 +241,22 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                             child: PointerInterceptor(
                                 child: Container(color: Colors.transparent)))
                       ]),
-                      for (var image in _listImages)
+                      for (var image in listImages)
                         Column(
                           children: [image, Gaps.v20],
                         ),
                       Wrap(
                         // scrollDirection: Axis.horizontal,
                         children: [
-                          for (var i = 0; i < _listChoices.length; i++)
+                          for (var i = 0; i < listChoices.length; i++)
                             Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: Stack(
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(10),
-                                      height: Sizes.size44,
-                                      width: Sizes.size96 * 1.5,
+                                      height: Sizes.size60,
+                                      width: Sizes.size96 * 5,
                                       child: TeXView(
                                         loadingWidgetBuilder: (context) {
                                           return const Center(
@@ -223,9 +264,8 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                                   CircularProgressIndicator());
                                         },
                                         child: TeXViewDocument(
-                                          Problems.listChoicesNumber[i] +
-                                              Problems.gap +
-                                              _listChoices[i],
+                                          "(${i + 1})${ProblemsG4C0.gap}" +
+                                              listChoices[i],
                                         ),
                                       ),
                                     ),
@@ -256,7 +296,7 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                         ],
                       ),
                       Gaps.v10,
-                      for (var i = 0; i < _listHints.length; i++)
+                      for (var i = 0; i < listHints.length; i++)
                         Stack(children: [
                           AnimatedOpacity(
                             duration: const Duration(milliseconds: 300),
@@ -266,21 +306,21 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                                 _hintTypeTextWidget(i),
                                 Gaps.v20,
                                 SizedBox(
-                                  height: 150,
+                                  height: Sizes.size96 * 2.5,
                                   child: TeXView(
                                     loadingWidgetBuilder: (context) {
                                       return const Center(
                                           child: CircularProgressIndicator());
                                     },
                                     child: TeXViewColumn(children: [
-                                      TeXViewDocument(_listHints[i],
+                                      TeXViewDocument(listHints[i],
                                           style: const TeXViewStyle(
                                               margin:
                                                   TeXViewMargin.only(top: 10)))
                                     ]),
                                   ),
                                 ),
-                                _hintImg[i + 1] ?? Gaps.v10,
+                                hintImg[i + 1] ?? Gaps.v10,
                                 Gaps.v40,
                               ],
                             ),
@@ -361,9 +401,9 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
                             ),
                           ),
                         Gaps.h24,
-                        Text("${widget.index} / $_problemNumber"),
+                        Text("${widget.index} / $problemNumber"),
                         Gaps.h24,
-                        if (widget.index < _problemNumber)
+                        if (widget.index < problemNumber)
                           GestureDetector(
                             onTap: _onTapNext,
                             child: const NextButton(

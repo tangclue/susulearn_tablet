@@ -6,11 +6,15 @@ class SelectProblemButton extends StatefulWidget {
       {Key? key,
       required this.text,
       required this.function,
+      required this.grade,
+      required this.chapter,
       required this.index})
       : super(key: key);
   final String text;
   final Function function;
   final int index;
+  final int grade;
+  final int chapter;
 
   @override
   _SelectProblemButtonState createState() => _SelectProblemButtonState();
@@ -21,8 +25,12 @@ class _SelectProblemButtonState extends State<SelectProblemButton> {
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: () {
-        print("${widget.index}");
-        widget.function(context, widget.index);
+        widget.function(
+          context,
+          widget.grade,
+          widget.chapter,
+          widget.index,
+        );
       },
       color: Colors.amber,
       child: FractionallySizedBox(

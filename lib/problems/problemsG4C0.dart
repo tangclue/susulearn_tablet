@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Problems {
+class ProblemsG4C0 {
   static String problem1 =
       r"""$\sqrt{20\over3} \times\sqrt{6\over5}$   의 값은?""";
 

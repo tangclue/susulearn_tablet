@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:susulearn_tablet/Screens/problem_select_screen.dart';
+import 'package:susulearn_tablet/Screens/chapter_select_screen.dart';
 
 import '../Constants/gaps.dart';
 import '../Constants/sizes.dart';
@@ -15,7 +15,7 @@ class ProblemsetSelectScreen extends StatefulWidget {
 class _ProblemsetSelectScreenState extends State<ProblemsetSelectScreen> {
   void _onTapProbplemSelect(context) {
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const ProblemSelectScreen()));
+        MaterialPageRoute(builder: (context) => const ChapterSelectScreen()));
   }
 
   @override
