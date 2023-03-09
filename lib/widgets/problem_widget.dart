@@ -29,16 +29,12 @@ class _ProblemWidgetState extends State<ProblemWidget> {
   Widget build(BuildContext context) {
     return Stack(children: [
       SizedBox(
-          // width: Sizes.size96,
           height: Sizes.size80 * 2,
-          // child:
-          // Image.asset(
-          //   "assets/image1.png",
-          //   fit: BoxFit.cover,
-          // ),
           child: widget.isShowing
               ? TeXView(
                   // renderingEngine: const TeXViewRenderingEngine.mathjax(),
+                  loadingWidgetBuilder: (context) =>
+                      const CircularProgressIndicator.adaptive(),
                   child: TeXViewDocument(
                     widget.problem,
                   ),

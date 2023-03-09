@@ -143,10 +143,10 @@ class _DrawingWidgetsState extends State<DrawingWidgets> {
           const Divider(
             height: 10.0,
           ),
-          buildColorButton(Colors.black),
-          buildColorButton(Colors.red),
-          buildColorButton(Colors.blueAccent),
-          buildColorButton(Colors.green),
+          // buildColorButton(Colors.black,),
+          // buildColorButton(Colors.red),
+          // buildColorButton(Colors.blueAccent),
+          // buildColorButton(Colors.green),
           const Divider(
             height: 10.0,
           ),

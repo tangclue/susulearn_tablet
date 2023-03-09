@@ -33,6 +33,7 @@ class _HintWidgetState extends State<HintWidget> {
           height: 150,
           child: widget.isShowing
               ? TeXView(
+                  renderingEngine: const TeXViewRenderingEngine.mathjax(),
                   loadingWidgetBuilder: (context) =>
                       const CircularProgressIndicator.adaptive(),
                   child: TeXViewDocument(

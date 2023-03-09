@@ -249,7 +249,7 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
                         ))),
                 IgnorePointer(
                   ignoring: !_isDrawing,
-                  child: _isDrawing ? const DrawingWidgets() : const SizedBox(),
+                  child: const DrawingWidgets(),
                 ),
                 Positioned(
                     top: Sizes.size12,

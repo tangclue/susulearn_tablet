@@ -107,8 +107,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
     //     MaterialPageRoute(
     //       builder: (context) => ProblemHintScreen(index: widget.index - 1),
     //     ));
-    setState(() {});
-    widget.index = widget.index - 1;
+    if (mounted) {
+      setState(() {
+        widget.index = widget.index - 1;
+      });
+    }
   }
 
   void _onTapNext() {
@@ -118,8 +121,11 @@ class _ProblemHintScreenState extends State<ProblemHintScreen> {
     //       builder: (context) => ProblemHintScreen(index: widget.index + 1),
 
     //     ));
-    setState(() {});
-    widget.index = widget.index + 1;
+    if (mounted) {
+      setState(() {
+        widget.index = widget.index + 1;
+      });
+    }
   }
 
   @override

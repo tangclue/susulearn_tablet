@@ -34,6 +34,7 @@ class _ChoiceWidgetState extends State<ChoiceWidget> {
           width: Sizes.size96,
           child: widget.isShowing
               ? TeXView(
+                  // renderingEngine: const TeXViewRenderingEngine.mathjax(),
                   loadingWidgetBuilder: (context) =>
                       const CircularProgressIndicator.adaptive(),
                   child: TeXViewDocument(
