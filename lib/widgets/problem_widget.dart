@@ -29,25 +29,21 @@ class _ProblemWidgetState extends State<ProblemWidget> {
   Widget build(BuildContext context) {
     return Stack(children: [
       SizedBox(
-          height: Sizes.size80 * 3,
-          child: FutureBuilder(
-            future: _problemfuture(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                print("ERROR!");
-                setState(() {});
-                return const SizedBox();
-              } else if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData &&
-                  widget.isShowing) {
-                return Container(
-                  child: snapshot.data,
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          )),
+          // width: Sizes.size96,
+          height: Sizes.size80 * 2,
+          // child:
+          // Image.asset(
+          //   "assets/image1.png",
+          //   fit: BoxFit.cover,
+          // ),
+          child: widget.isShowing
+              ? TeXView(
+                  // renderingEngine: const TeXViewRenderingEngine.mathjax(),
+                  child: TeXViewDocument(
+                    widget.problem,
+                  ),
+                )
+              : Container()),
       Positioned.fill(
           child:
               PointerInterceptor(child: Container(color: Colors.transparent)))

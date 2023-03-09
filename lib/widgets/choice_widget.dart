@@ -30,26 +30,17 @@ class _ChoiceWidgetState extends State<ChoiceWidget> {
     return Stack(children: [
       Container(
           padding: const EdgeInsets.all(10),
-          height: Sizes.size44,
-          width: Sizes.size96 * 1.5,
-          child: FutureBuilder(
-            future: _choicefuture(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                setState(() {});
-                print("ERROR!");
-                return const SizedBox();
-              } else if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData &&
-                  widget.isShowing) {
-                return Container(
-                  child: snapshot.data,
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          )),
+          height: Sizes.size64,
+          width: Sizes.size96,
+          child: widget.isShowing
+              ? TeXView(
+                  loadingWidgetBuilder: (context) =>
+                      const CircularProgressIndicator.adaptive(),
+                  child: TeXViewDocument(
+                    widget.choice,
+                  ),
+                )
+              : Container()),
       Positioned.fill(
         child: PointerInterceptor(
           child: Container(

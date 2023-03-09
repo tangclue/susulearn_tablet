@@ -24,9 +24,8 @@ class _SelectProblemButtonState extends State<SelectProblemButton> {
         print("${widget.index}");
         widget.function(context, widget.index);
       },
-      color: Colors.amber,
+      color: Colors.grey,
       child: FractionallySizedBox(
-          widthFactor: 1,
           child: Center(child: Text("${widget.text} ${widget.index}"))),
     );
   }

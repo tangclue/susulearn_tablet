@@ -31,24 +31,15 @@ class _HintWidgetState extends State<HintWidget> {
     return Stack(children: [
       SizedBox(
           height: 150,
-          child: FutureBuilder(
-            future: _hintfuture(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                print("ERROR!");
-                setState(() {});
-                return const SizedBox();
-              } else if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData &&
-                  widget.isShowing) {
-                return Container(
-                  child: snapshot.data,
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          )),
+          child: widget.isShowing
+              ? TeXView(
+                  loadingWidgetBuilder: (context) =>
+                      const CircularProgressIndicator.adaptive(),
+                  child: TeXViewDocument(
+                    widget.hint,
+                  ),
+                )
+              : Container()),
       Positioned.fill(
         child: PointerInterceptor(
           child: Container(
