@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tex/flutter_tex.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:susulearn_tablet/widgets/choice_widget.dart';
 import 'package:susulearn_tablet/widgets/hint_button.dart';
@@ -30,8 +29,8 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
   late int hintMax = Problems.listHints[widget.index - 1].length;
   late List<bool> _hintShowing = List.filled(hintMax, false);
   int _submitIndex = 0;
-  final bool _submitted = false;
-  final bool _corrected = false;
+  bool _submitted = false;
+  bool _corrected = false;
   bool _isDrawing = false;
 
   void clearExpressions() {
@@ -94,13 +93,12 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
     });
   }
 
-  Future<Widget> _problemfuture() async {
-    print("Rendered!");
-    return TeXView(
-      child: TeXViewDocument(
-        _problem,
-      ),
-    );
+  void _onPressedSubmit() {
+    setState(() {
+      _submitted = true;
+
+      _corrected = (_submitIndex == _ans);
+    });
   }
 
   @override
@@ -163,7 +161,7 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
                       child: Padding(
                         padding: const EdgeInsets.only(
                             // top: Sizes.size12,
-                            right: Sizes.size60,
+                            right: Sizes.size60 * 2,
                             left: Sizes.size24),
                         child: Column(children: [
                           const FractionallySizedBox(
@@ -275,6 +273,20 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
                             onPressed: _onToggleDrawing,
                           ),
                           const Text("그리기")
+                        ],
+                      )),
+                  Positioned(
+                      top: Sizes.size12,
+                      right: Sizes.size60,
+                      child: Column(
+                        children: [
+                          IconButton(
+                              icon: const FaIcon(
+                                FontAwesomeIcons.circle,
+                                color: Colors.green,
+                              ),
+                              onPressed: _onPressedSubmit),
+                          const Text("채점하기")
                         ],
                       )),
                 ]),

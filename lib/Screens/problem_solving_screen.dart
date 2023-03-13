@@ -4,7 +4,6 @@ import 'package:susulearn_tablet/Screens/example_screen.dart';
 import '../Constants/gaps.dart';
 import '../Constants/sizes.dart';
 import '../problems/problems.dart';
-import '../widgets/grade_button.dart';
 import '../widgets/next_button.dart';
 
 class ProblemSolvingScreen extends StatefulWidget {
@@ -36,6 +35,24 @@ class _ProblemSolvingScreenState extends State<ProblemSolvingScreen> {
 
     //   _corrected = (_submitIndex == _ans);
     // });
+
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: const Text('채점 결과'),
+    //       content: const Text('This is a pop-up notice.'),
+    //       actions: [
+    //         TextButton(
+    //           child: const Text('Close'),
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
   }
 
   @override
@@ -83,21 +100,21 @@ class _ProblemSolvingScreenState extends State<ProblemSolvingScreen> {
                     ]),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                        onTap: _onPressedSubmit,
-                        child: const GradeButton(text: "채점\n하기")),
-                    // Gaps.v10,
-                    // const GradeButton(text: "전체\n채점")
-                  ],
-                )
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     Column(
+            //       mainAxisSize: MainAxisSize.min,
+            //       children: [
+            //         GestureDetector(
+            //             onTap: _onPressedSubmit,
+            //             child: const GradeButton(text: "채점\n하기")),
+            //         // Gaps.v10,
+            //         // const GradeButton(text: "전체\n채점")
+            //       ],
+            //     )
+            //   ],
+            // ),
           ]),
         ),
       ),
