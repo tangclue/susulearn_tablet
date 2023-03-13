@@ -92,8 +92,8 @@ class _ProblemSolvingScreenState extends State<ProblemSolvingScreen> {
                     GestureDetector(
                         onTap: _onPressedSubmit,
                         child: const GradeButton(text: "채점\n하기")),
-                    Gaps.v10,
-                    const GradeButton(text: "전체\n채점")
+                    // Gaps.v10,
+                    // const GradeButton(text: "전체\n채점")
                   ],
                 )
               ],

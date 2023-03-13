@@ -28,7 +28,7 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
   late Map _hintImg = Problems.listHintImg[widget.index - 1];
   late final int _ans = 3;
   late int hintMax = Problems.listHints[widget.index - 1].length;
-  late final List<bool> _hintShowing = List.filled(hintMax, false);
+  late List<bool> _hintShowing = List.filled(hintMax, false);
   int _submitIndex = 0;
   final bool _submitted = false;
   final bool _corrected = false;
@@ -89,6 +89,7 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
 
   void _onToggleHint({required int index}) {
     setState(() {
+      _hintShowing = List.filled(hintMax, false);
       _hintShowing[index] = !_hintShowing[index];
     });
   }
@@ -117,8 +118,9 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
                 onTap: () {
                   _onToggleHint(index: 0);
                 },
-                child: const HintButton(
+                child: HintButton(
                   text: "용어\n힌트",
+                  isborder: _hintShowing[0],
                 ),
               ),
               Gaps.h10,
@@ -126,8 +128,9 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
                 onTap: () {
                   _onToggleHint(index: 1);
                 },
-                child: const HintButton(
+                child: HintButton(
                   text: "개념\n힌트",
+                  isborder: _hintShowing[1],
                 ),
               ),
               Gaps.h10,
@@ -135,137 +138,147 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
                 onTap: () {
                   _onToggleHint(index: 2);
                 },
-                child: const HintButton(
+                child: HintButton(
                   text: "해설\n힌트",
+                  isborder: _hintShowing[2],
                 ),
               ),
               Gaps.h10,
             ],
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              physics: !_isDrawing
-                  ? const AlwaysScrollableScrollPhysics()
-                  : const NeverScrollableScrollPhysics(),
-              child: Stack(children: [
-                Container(
-                  color: Colors.transparent,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 1,
-                    // height: 2000,
+            child: Padding(
+              padding: const EdgeInsets.only(left: Sizes.size96),
+              child: SingleChildScrollView(
+                physics: !_isDrawing
+                    ? const AlwaysScrollableScrollPhysics()
+                    : const NeverScrollableScrollPhysics(),
+                child: Stack(children: [
+                  Container(
                     color: Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          // top: Sizes.size12,
-                          right: Sizes.size60,
-                          left: Sizes.size24),
-                      child: Column(children: [
-                        const FractionallySizedBox(
-                          widthFactor: 1,
-                        ),
-                        Gaps.v40,
-                        ProblemWidget(
-                          problem: _problem,
-                          isShowing: widget.isShowing,
-                        ),
-                        for (var image in _listImages)
-                          Column(
-                            children: [image, Gaps.v20],
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 1,
+                      // height: 2000,
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            // top: Sizes.size12,
+                            right: Sizes.size60,
+                            left: Sizes.size24),
+                        child: Column(children: [
+                          const FractionallySizedBox(
+                            widthFactor: 1,
                           ),
-                        Wrap(
-                          // scrollDirection: Axis.horizontal,
-                          children: [
-                            for (var i = 0; i < _listChoices.length; i++)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    _onTapAnswerIndex(i);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: Sizes.size1,
-                                            color: _submitIndex == i + 1
-                                                ? Colors.black
-                                                : Colors.transparent),
-                                        borderRadius:
-                                            BorderRadius.circular(Sizes.size6)),
-                                    child: ChoiceWidget(
-                                        choice: Problems.listChoicesNumber[i] +
-                                            Problems.gap +
-                                            _listChoices[i],
-                                        isShowing: widget.isShowing),
+                          Gaps.v40,
+                          ProblemWidget(
+                            problem: _problem,
+                            isShowing: widget.isShowing,
+                          ),
+                          for (var image in _listImages)
+                            Column(
+                              children: [image, Gaps.v20],
+                            ),
+                          Wrap(
+                            // mainAxisAlignment: MainAxisAlignment
+                            //     .start, // scrollDirection: Axis.horizontal,
+                            children: [
+                              for (var i = 0; i < _listChoices.length; i++)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _onTapAnswerIndex(i);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: Sizes.size1,
+                                              color: _submitIndex == i + 1
+                                                  ? Colors.black
+                                                  : Colors.transparent),
+                                          borderRadius: BorderRadius.circular(
+                                              Sizes.size6)),
+                                      child: ChoiceWidget(
+                                          choice:
+                                              Problems.listChoicesNumber[i] +
+                                                  Problems.gap +
+                                                  _listChoices[i],
+                                          isShowing: widget.isShowing),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            Gaps.v20,
-                          ],
-                        ),
-                        Gaps.v10,
-                        for (var i = 0; i < _listHints.length; i++)
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 300),
-                            opacity: _hintShowing[i] ? 1 : 0,
-                            child: Column(
-                              children: [
-                                _hintTypeTextWidget(i),
-                                Gaps.v20,
-                                HintWidget(
-                                  hint: _listHints[i],
-                                  isShowing: widget.isShowing,
-                                ),
-                                _hintImg[i + 1] ?? Gaps.v10,
-                                Gaps.v40,
-                              ],
-                            ),
+                              Gaps.v20,
+                            ],
                           ),
-                      ]),
+                          Gaps.v80,
+                          Stack(
+                            children: [
+                              for (var i = 0; i < _listHints.length; i++)
+                                AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 300),
+                                  opacity: _hintShowing[i] ? 1 : 0,
+                                  child: Column(
+                                    children: [
+                                      _hintTypeTextWidget(i),
+                                      Gaps.v8,
+                                      HintWidget(
+                                        hint: _listHints[i],
+                                        isShowing: widget.isShowing,
+                                      ),
+                                      _hintImg[i + 1] ?? Gaps.v10,
+                                      Gaps.v40,
+                                    ],
+                                  ),
+                                )
+                            ],
+                          ),
+                        ]),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                    top: Sizes.size12,
-                    left: Sizes.size12,
-                    child: AnimatedOpacity(
-                      opacity: (_submitted && !_corrected) ? 1 : 0,
-                      duration: const Duration(milliseconds: 500),
-                      child: FaIcon(
-                        FontAwesomeIcons.x,
-                        size: Sizes.size80,
-                        color: Colors.red.withOpacity(0.5),
-                      ),
-                    )),
-                Positioned(
-                    top: Sizes.size12,
-                    left: Sizes.size12,
-                    child: AnimatedOpacity(
-                        opacity: (_submitted && _corrected) ? 1 : 0,
+                  Positioned(
+                      top: Sizes.size12,
+                      left: Sizes.size12,
+                      child: AnimatedOpacity(
+                        opacity: (_submitted && !_corrected) ? 1 : 0,
                         duration: const Duration(milliseconds: 500),
                         child: FaIcon(
-                          FontAwesomeIcons.circle,
+                          FontAwesomeIcons.x,
                           size: Sizes.size80,
-                          color: Colors.green.withOpacity(0.5),
-                        ))),
-                IgnorePointer(
-                  ignoring: !_isDrawing,
-                  child: const DrawingWidgets(),
-                ),
-                Positioned(
-                    top: Sizes.size12,
-                    right: Sizes.size12,
-                    child: Column(
-                      children: [
-                        IconButton(
-                          icon: !_isDrawing
-                              ? const FaIcon(FontAwesomeIcons.pencil)
-                              : const FaIcon(FontAwesomeIcons.ban),
-                          onPressed: _onToggleDrawing,
+                          color: Colors.red.withOpacity(0.5),
                         ),
-                        const Text("그리기")
-                      ],
-                    )),
-              ]),
+                      )),
+                  Positioned(
+                      top: Sizes.size12,
+                      left: Sizes.size12,
+                      child: AnimatedOpacity(
+                          opacity: (_submitted && _corrected) ? 1 : 0,
+                          duration: const Duration(milliseconds: 500),
+                          child: FaIcon(
+                            FontAwesomeIcons.circle,
+                            size: Sizes.size80,
+                            color: Colors.green.withOpacity(0.5),
+                          ))),
+                  IgnorePointer(
+                    ignoring: !_isDrawing,
+                    child: const DrawingWidgets(),
+                  ),
+                  Positioned(
+                      top: Sizes.size12,
+                      right: Sizes.size12,
+                      child: Column(
+                        children: [
+                          IconButton(
+                            icon: !_isDrawing
+                                ? const FaIcon(FontAwesomeIcons.pencil)
+                                : const FaIcon(FontAwesomeIcons.ban),
+                            onPressed: _onToggleDrawing,
+                          ),
+                          const Text("그리기")
+                        ],
+                      )),
+                ]),
+              ),
             ),
           ),
         ));

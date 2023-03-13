@@ -37,7 +37,7 @@ class LoginScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           const Text(
-                            "수학이 재미있다. Tang Clue",
+                            "수학이 재미있다. 스스런",
                             style: TextStyle(
                               fontSize: Sizes.size24,
                               fontWeight: FontWeight.w700,
@@ -60,7 +60,7 @@ class LoginScreen extends StatelessWidget {
                           const EdgeInsets.symmetric(horizontal: Sizes.size24),
                       child: FractionallySizedBox(
                         // heightFactor: 0.3,
-                        child: Image.asset("assets/image1.png"),
+                        child: Image.asset("assets/mainPage.png"),
                       ),
                     ),
                     Align(
