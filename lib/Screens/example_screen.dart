@@ -146,7 +146,8 @@ class _ExampleScreen1State extends State<ExampleScreen1> {
           ),
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(left: Sizes.size96),
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.1),
               child: SingleChildScrollView(
                 physics: !_isDrawing
                     ? const AlwaysScrollableScrollPhysics()

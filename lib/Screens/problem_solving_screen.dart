@@ -29,31 +29,31 @@ class _ProblemSolvingScreenState extends State<ProblemSolvingScreen> {
     });
   }
 
-  void _onPressedSubmit() {
-    // setState(() {
-    //   _submitted = true;
+  // void _onPressedSubmit() {
+  // setState(() {
+  //   _submitted = true;
 
-    //   _corrected = (_submitIndex == _ans);
-    // });
+  //   _corrected = (_submitIndex == _ans);
+  // });
 
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: const Text('채점 결과'),
-    //       content: const Text('This is a pop-up notice.'),
-    //       actions: [
-    //         TextButton(
-    //           child: const Text('Close'),
-    //           onPressed: () {
-    //             Navigator.of(context).pop();
-    //           },
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
-  }
+  // showDialog(
+  //   context: context,
+  //   builder: (BuildContext context) {
+  //     return AlertDialog(
+  //       title: const Text('채점 결과'),
+  //       content: const Text('This is a pop-up notice.'),
+  //       actions: [
+  //         TextButton(
+  //           child: const Text('Close'),
+  //           onPressed: () {
+  //             Navigator.of(context).pop();
+  //           },
+  //         ),
+  //       ],
+  //     );
+  //   },
+  // );
+  // }
 
   @override
   Widget build(BuildContext context) {

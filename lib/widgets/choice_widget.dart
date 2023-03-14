@@ -31,7 +31,7 @@ class _ChoiceWidgetState extends State<ChoiceWidget> {
       Container(
           padding: const EdgeInsets.all(10),
           height: Sizes.size64,
-          width: Sizes.size96,
+          width: Sizes.size96 * 1.5,
           child: widget.isShowing
               ? TeXView(
                   // renderingEngine: const TeXViewRenderingEngine.mathjax(),
